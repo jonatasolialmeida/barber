@@ -1,0 +1,16 @@
+# Ignorar arquivos não necessários no Docker
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignorar ambiente virtual e .env
+venv/
+.env/
+
+# Ignorar arquivos de configuração local e logs
+*.log
+docker-compose.override.yml
+
+# Ignorar dependências do frontend
+frontend/node_modules
+frontend/.next

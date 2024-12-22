@@ -1,0 +1,32 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+*.sqlite3
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+
+# Ambiente virtual
+venv/
+.env/
+
+# Docker
+*.log
+*.pid
+*.db
+docker-compose.override.yml
+
+# Editor-specific
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+

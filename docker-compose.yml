@@ -1,0 +1,72 @@
+services:
+  # Serviço do Backend (Django + Gunicorn)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+    networks:
+      - app-network
+    expose:
+      - "8000"
+    command: ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "BarberEasy.wsgi:application"]
+
+  # Serviço do Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
+    command: ["npm", "start"]
+
+  # Serviço do Banco de Dados (PostgreSQL)
+  db:
+    image: postgres:16-alpine
+    container_name: db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # Serviço do Nginx para fazer proxy reverso
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
